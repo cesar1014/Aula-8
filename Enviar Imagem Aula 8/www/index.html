@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Foto para ImgBB</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        #resultado {
+            width: 300px;
+            height: auto;
+            margin-top: 20px;
+            border: 2px solid #000;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tirar e Enviar Foto</h1>
+    <button onclick="tirarFoto()">Tirar Foto</button>
+    <br/><br/>
+    <img id="resultado" src="" alt="Sua foto aparecerá aqui">
+
+    <script>
+        function tirarFoto() {
+            navigator.camera.getPicture(onSuccess, onFail, {
+                quality: 50,
+                destinationType: Camera.DestinationType.DATA_URL
+            });
+        }
+
+        function onSuccess(imageData) {
+            // Exibe a imagem localmente
+            const imageElement = document.getElementById('resultado');
+            imageElement.src = "data:image/jpeg;base64," + imageData;
+
+            // Envia a imagem para o ImgBB
+            sendData(imageData);
+        }
+
+        function onFail(message) {
+            alert('Falha ao capturar a foto: ' + message);
+        }
+
+        function sendData(imageData) {
+            const formData = new FormData();
+            formData.append('expiration', '600000'); // Tempo de expiração
+            formData.append('key', 'SUA_API_KEY_DO_IMGBB'); // Substitua pela sua chave da API ImgBB
+            const file = new Blob([imageData], { type: "image/jpeg" });
+            formData.append("image", file);
+
+            fetch('https://api.imgbb.com/1/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Success:', data);
+                    // Atualiza a imagem para a versão armazenada na nuvem
+                    document.getElementById('resultado').src = data.data.thumb.url;
+                } else {
+                    console.error('Erro no upload:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao enviar:', error);
+            });
+        }
+    </script>
+</body>
+</html>

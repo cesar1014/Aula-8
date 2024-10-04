@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa da Localização</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        iframe {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Localização no Mapa</h1>
+    <iframe id="map" width="425" height="350" src="https://www.openstreetmap.org/export/embed.html?bbox=-48.564870357513435%2C-20.548459478869525%2C-48.53933572769166%2C-20.53322864935638&amp;layer=mapnik" style="border: 1px solid black"></iframe><br/>
+    <small><a id="linkMapa" href="https://www.openstreetmap.org/#map=16/-20.54084/-48.55210" target="_blank">Ver mapa ampliado</a></small><br><br>
+    
+    <button onclick="compartilharMapa()">Compartilhar Mapa</button>
+
+    <script>
+        function compartilharMapa() {
+            const iframeSrc = document.getElementById('map').src;
+            const link = document.createElement('a');
+            link.href = iframeSrc;
+            link.target = '_blank';
+            link.innerText = 'Compartilhar Mapa';
+            document.body.appendChild(link);
+            alert('Link de compartilhamento gerado! Clique no link abaixo para compartilhar:');
+        }
+    </script>
+</body>
+</html>
